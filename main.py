@@ -3,17 +3,11 @@ from concurrent.futures import ThreadPoolExecutor
 from cdnCheck import cdn_check
 import argparse
 
-def ThreadPool(func,urls,max_thread=10):
-    l=[]
-    p = ThreadPoolExecutor(max_thread)
-    for url in urls:
-        obj = p.submit(func, url)
-        l.append(obj)
-    
-    with ThreadPoolExecutor(max_workers=10) as executor:
+def ThreadPool(func,urls,max_workers=10):
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
         to_do = []
         for url in urls:
-            obj = p.submit(cdn_check, url)
+            obj = executor.submit(func, url)
             to_do.append(obj)
     for future in concurrent.futures.as_completed(to_do):
         result, domain = future.result()
@@ -23,7 +17,6 @@ def ThreadPool(func,urls,max_thread=10):
             savefile('result/cdnResult.txt',domain)
         else:
             savefile('result/errorResult.txt',domain)
-
         
 def savefile(filename, data):
     with open(filename, 'a', encoding='utf-8')as f:
@@ -42,4 +35,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
     domain = args.file
     urls = readfile(domain)
-    ThreadPool(cdn_check,urls,max_thread=20)
+    ThreadPool(cdn_check,urls,max_workers=10)

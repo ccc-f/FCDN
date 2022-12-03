@@ -1,5 +1,7 @@
 # FCDN 批量检测脚本
 
+更强大的cdn检测，但不止cdn检测。
+
 ## 如何使用？
 
 安装依赖：
@@ -19,33 +21,31 @@ python cdnCheck.py -u huya.com
 python main.py -f domain.txt
 ```
 
-返回的结果在 result 目录下
+返回的结果在 result 目录下，共有三个：
+
+nocdnResult.txt 
+cdnResult.txt
+errorResult.txt
 
 ## 它可以做什么？
 
 先说优点：**快速**、**精准**、**全面**
 
-可以检测云waf、cdn、dmzweb
+功能是从一大堆域名中查找使用了真实IP的域名，方便使用者精准定位服务器所在网段
 
-使用了负载均衡技术的站点，虽然多地 ping 会返回多个 IP，但那些 IP 都是目标的 IP 资产，如 [F5 Big-IP](https://baike.baidu.com/item/F5%20BIG-IP%E6%9C%AC%E5%9C%B0%E6%B5%81%E9%87%8F%E7%AE%A1%E7%90%86%E5%99%A8/4415289?fr=aladdin)，不会造成遗漏。
+比如使用了云waf、cdn、dmzweb 等技术的网站是无法解析真实IP的，而现在大量的网站使用了云waf，这时候我们的技术手段不应停留在单纯的检测cdn上，这是不准确不充分不完整的，所以有了这个工具。
 
 ## 为什么重要？
 
 因为如果能快速准确的识别出使用了真实IP的站点，我们就可以精准的去扫该IP段，从而发现更多的资产，避免误伤和浪费时间。
 
-拿我学校的站点测试过，使用了dmz服务器，解析的IP都是假的，但某个子域名没有加入到该dmz服务器，所以可以解析真实IP，所以我可以快速精准扫描学校服务器所在的网段，方便后续精准打击。
-
-这就是这个项目为什么是神的原因。
-
-本人评价是满昏。
-
 ## 检测原理
 
 放弃了传统的检测白名单CDN网段/ASN的方式，因为这种方式需要去维护和更新 cdn 网段，不太可靠。
 也不使用第三方的站点来判断。
-转而是使用 Python 的 dns.resolver 库去判断是否存在 CDN，该库的功能相当于使用 nslookup 命令去解析目标站点。
+转而是使用 Python 的 dnspython 库去判断是否存在 CDN，该库的功能相当于使用 nslookup 命令去解析目标站点。
 
-有两种情况下，可以知道目标站点使用了 CDN、云waf。
+有三种情况下，可以知道目标域名是否使用了真实IP和域名有效性。
 
 1. 返回结果多于两个ip
     [<104.21.23.10>, <172.67.208.68>]
@@ -56,6 +56,8 @@ python main.py -f domain.txt
     出现这种情况是因为目标站点使用了云 waf，这种站点也是获取不到真实IP的。
 
 3. 使用了dmzweb技术防护的站点，统一把网站的流量导向该站点 dmzweb.xxx.edu.cn,无法获取真实IP，对比扫描的domain长度和解析的cname长度。
+
+你可能会遇到使用了负载均衡技术的站点，这时候使用第三方站点测试，会检测到多个解析的IP，但那些 IP 都是目标的用来做负载均衡的 IP 资产，也是属于目标资产，该工具不会将其归类到cdn上，如 [F5 Big-IP](https://baike.baidu.com/item/F5%20BIG-IP%E6%9C%AC%E5%9C%B0%E6%B5%81%E9%87%8F%E7%AE%A1%E7%90%86%E5%99%A8/4415289?fr=aladdin)。
 
 ## 测试
 
@@ -80,6 +82,10 @@ www.csu.edu.cn			使用了 F5 Big-IP 负载均衡
 ![image-20221202102336233](./imgs/README/image-20221202102336233.png)
 
 ![image-20221202102538908](./imgs/README/image-20221202102538908.png)
+
+脚本测试的结果是否准确：
+
+type .\result\errorResult.txt | nslookup
 
 ## 看到最后
 
