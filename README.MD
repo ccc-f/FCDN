@@ -15,7 +15,7 @@ pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt
 python cdnCheck.py -u huya.com
 ```
 
-批量域名检测：
+批量子域名检测：
 
 ```
 python main.py -f domain.txt
@@ -31,7 +31,7 @@ errorResult.txt
 
 先说优点：**快速**、**精准**、**全面**
 
-功能是从一大堆域名中查找使用了真实IP的域名，方便使用者精准定位服务器所在网段
+功能是从一大堆子域名中查找使用了真实IP的子域名，方便使用者精准定位服务器所在网段
 
 比如使用了云waf、cdn、dmzweb 等技术的网站是无法解析真实IP的，而现在大量的网站使用了云waf，这时候我们的技术手段不应停留在单纯的检测cdn上，这是不准确不充分不完整的，所以有了这个工具。
 
@@ -58,6 +58,16 @@ errorResult.txt
 3. 使用了dmzweb技术防护的站点，统一把网站的流量导向该站点 dmzweb.xxx.edu.cn,无法获取真实IP，对比扫描的domain长度和解析的cname长度。
 
 你可能会遇到使用了负载均衡技术的站点，这时候使用第三方站点测试，会检测到多个解析的IP，但那些 IP 都是目标的用来做负载均衡的 IP 资产，也是属于目标资产，该工具不会将其归类到cdn上，如 [F5 Big-IP](https://baike.baidu.com/item/F5%20BIG-IP%E6%9C%AC%E5%9C%B0%E6%B5%81%E9%87%8F%E7%AE%A1%E7%90%86%E5%99%A8/4415289?fr=aladdin)。
+
+也有些不太寻常的域名，比如 sto.cn，在 nslookup 的解析是
+
+非权威应答:
+名称:    sto.cn
+Address:  203.107.44.133
+
+多地ping和cdn节点检测都是只有一个IP，但该IP的80端口上绑定了很多不同的站点，这种情况，它就是真实 IP，只是通过 ServerName 区分不同的域名实现绑定多个站点。
+
+这种情况的 IP 是真实但没有意义的，所以直接拉黑了这个 IP，归到使用了 cdn 那一列。
 
 ## 测试
 
@@ -88,6 +98,10 @@ www.csu.edu.cn			使用了 F5 Big-IP 负载均衡
 type .\result\errorResult.txt | nslookup
 
 ## 看到最后
+
+虽然这个项目挺简单的，挺小的一件事，但能从一大堆子域名中快速找到可能使用了真实 IP 的子域名，这又何尝不是把一件小事做到极致。
+
+也许某一天，这个工具会在我一筹莫展的时候给我带来一点惊喜，我想这就是它存在的意义了吧。
 
 工作之余开发，如有错漏，请提到 issues。
 
