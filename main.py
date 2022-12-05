@@ -3,7 +3,7 @@ from concurrent.futures import ThreadPoolExecutor
 from cdnCheck import cdn_check
 import argparse
 
-def ThreadPool(func,urls,max_workers=10):
+def ThreadPool(func,urls,max_workers):
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         to_do = []
         for url in urls:
@@ -32,7 +32,9 @@ def readfile(filename):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='by Scrboy.')
     parser.add_argument('-f', '--file', type=str, default='domain.txt')
+    parser.add_argument('-t', '--thread', default=50)
     args = parser.parse_args()
     domain = args.file
+    thread_count = args.thread
     urls = readfile(domain)
-    ThreadPool(cdn_check,urls,max_workers=10)
+    ThreadPool(cdn_check,urls,max_workers=thread_count)
