@@ -32,7 +32,7 @@ def readfile(filename):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='by Scrboy.')
     parser.add_argument('-f', '--file', type=str, default='domain.txt')
-    parser.add_argument('-t', '--thread', default=50)
+    parser.add_argument('-t', '--thread',type=int, default=50)
     args = parser.parse_args()
     domain = args.file
     thread_count = args.thread
