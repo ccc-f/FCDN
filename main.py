@@ -2,6 +2,7 @@ import concurrent.futures
 from concurrent.futures import ThreadPoolExecutor
 from cdnCheck import cdn_check
 import argparse
+import os
 
 def ThreadPool(func,urls,max_workers):
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
@@ -11,6 +12,8 @@ def ThreadPool(func,urls,max_workers):
             to_do.append(obj)
     for future in concurrent.futures.as_completed(to_do):
         result, domain = future.result()
+        if not os.path.exists('./result/'):
+            os.mkdir('./result/')
         if result is False:
             savefile('./result/nocdnResult.txt',domain)
         elif result is True:
