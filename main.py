@@ -12,11 +12,11 @@ def ThreadPool(func,urls,max_workers):
     for future in concurrent.futures.as_completed(to_do):
         result, domain = future.result()
         if result is False:
-            savefile('result/nocdnResult.txt',domain)
+            savefile('./result/nocdnResult.txt',domain)
         elif result is True:
-            savefile('result/cdnResult.txt',domain)
+            savefile('./result/cdnResult.txt',domain)
         else:
-            savefile('result/errorResult.txt',domain)
+            savefile('./result/errorResult.txt',domain)
         
 def savefile(filename, data):
     with open(filename, 'a', encoding='utf-8')as f:
