@@ -2,8 +2,6 @@ import dns.resolver
 import argparse
 import re 
 
-blackIpList = ['203.107.44.133',]
-
 def cdn_check(domain):
     """
     if   cdn    return True
@@ -17,8 +15,6 @@ def cdn_check(domain):
         a = resolver.resolve(domain, 'A')
         for index,value in enumerate(a.response.answer):
             for j in value.items:
-                if j.to_text() in blackIpList:
-                    return True,domain
                 if re.search(r'\d+\.\d+\.\d+\.\d+', j.to_text()):
                     ipcount += 1
                     if ipcount >= 2:

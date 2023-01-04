@@ -63,16 +63,6 @@ errorResult.txt
 
 你可能会遇到使用了负载均衡技术的站点，这时候使用第三方站点测试，会检测到多个解析的IP，但那些 IP 都是目标的用来做负载均衡的 IP 资产，也是属于目标资产，该工具不会将其归类到cdn上，如 [F5 Big-IP](https://baike.baidu.com/item/F5%20BIG-IP%E6%9C%AC%E5%9C%B0%E6%B5%81%E9%87%8F%E7%AE%A1%E7%90%86%E5%99%A8/4415289?fr=aladdin)。
 
-也有些不太寻常的域名，比如 sto.cn，在 nslookup 的解析是
-
-非权威应答:
-名称:    sto.cn
-Address:  203.107.44.133
-
-多地ping和cdn节点检测都是只有一个IP，但该IP的80端口上绑定了很多不同的站点，这种情况，它就是真实 IP，只是通过 ServerName 区分不同的域名实现绑定多个站点。
-
-这种情况的 IP 是真实但没有意义的，所以直接拉黑了这个 IP，归到使用了 cdn 那一列。
-
 ## 测试
 
 在线cdn检测网站 https://myssl.com/cdn_check.html
