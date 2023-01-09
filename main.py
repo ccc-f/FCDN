@@ -39,5 +39,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
     domain = args.file
     thread_count = args.thread
-    urls = readfile(domain)
+    urls = list(set(readfile(domain)))
     ThreadPool(cdn_check,urls,max_workers=thread_count)
