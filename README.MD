@@ -37,7 +37,7 @@ errorResult.txt
 
 支持多线程，但不是太重要，因为它的主要作用不是探测子域名，虽然它也可以做到，但不是最好的，在我看来最好的子域名探测工具是 OneForAll。
 
-比如使用了云waf、cdn、dmzweb 等技术的网站是无法解析真实IP的，而现在大量的网站使用了云waf，这时候我们的技术手段不应停留在单纯的检测cdn上，这是不准确不充分不完整的，所以有了这个工具。
+比如使用了云waf、cdn等技术的网站是无法解析真实IP的，而现在大量的网站使用了云waf，这时候我们的技术手段不应停留在单纯的检测cdn上，这是不准确不充分不完整的，所以有了这个工具。
 
 ## 为什么重要？
 
@@ -59,9 +59,6 @@ errorResult.txt
     比如：www.abc.com 的 CNAME 是 www-abc-com.site.nscloudwaf.com 
     出现这种情况是因为目标站点使用了云 waf，这种站点也是获取不到真实IP的。
 
-3. 使用了dmzweb技术防护的站点，统一把网站的流量导向该站点 dmzweb.xxx.edu.cn,无法获取真实IP，对比扫描的domain长度和解析的cname长度。
-
-你可能会遇到使用了负载均衡技术的站点，这时候使用第三方站点测试，会检测到多个解析的IP，但那些 IP 都是目标的用来做负载均衡的 IP 资产，也是属于目标资产，该工具不会将其归类到cdn上，如 [F5 Big-IP](https://baike.baidu.com/item/F5%20BIG-IP%E6%9C%AC%E5%9C%B0%E6%B5%81%E9%87%8F%E7%AE%A1%E7%90%86%E5%99%A8/4415289?fr=aladdin)。
 
 ## 测试
 
@@ -73,7 +70,6 @@ errorResult.txt
 giihg.com				云waf
 huya.com				cdn
 www.cip.cc				真实IP
-xxx.edu.cn				使用了 dmz 服务器，解析到dmz.xxx.edu.cn
 www.csu.edu.cn			使用了 F5 Big-IP 负载均衡
 ```
 
@@ -91,13 +87,11 @@ www.csu.edu.cn			使用了 F5 Big-IP 负载均衡
 
 type .\result\errorResult.txt | nslookup
 
-## 看到最后
+## 写在最后
 
-虽然这个项目挺简单的，挺小的一件事，但能从一大堆子域名中快速找到可能使用了真实 IP 的子域名，这又何尝不是把一件小事做到极致。
+使用案例：在做某集团的资产梳理的时候，需要扫描其资产的服务器IP端口，我使用该工具快速从一大堆子域名中筛选出了真实IP，进而使用 masscan+nmap 完成了端口扫描，成功避免扫到云waf、cdn IP 污染我的扫描结果，整个过程高效、简洁、快速。这就是它的使用方法。
 
-也许某一天，这个工具会在我一筹莫展的时候给我带来一点惊喜，我想这就是它存在的意义了吧。
-
-工作之余开发，如有错漏，请提到 issues。
+如有错漏，请提到 issues。
 
 如果该项目对你有帮助，麻烦点个 star，万分感谢。
 

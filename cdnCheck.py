@@ -4,8 +4,8 @@ import re
 
 def cdn_check(domain):
     """
-    if   cdn    return True
-    else        return False
+    if   cdn    return True,domain
+    else        return False,domain
     """
     ipcount = 0
     try:
@@ -21,11 +21,12 @@ def cdn_check(domain):
                         return True,domain
                 elif re.search(r'(\w+\.)+', j.to_text()):
                     cname = j.to_text()[:-1]
-                    length = len(cname)
-                    if length != len(domain):
-                        return True,domain
-                    else:
+                    p1 = '.'.join(cname.split('.')[-2:])
+                    p2 = '.'.join(domain.split('.')[-2:])
+                    if p1 == p2:
                         return False,domain
+                    else:
+                        return True,domain
                 else:
                     return False,domain
         if ipcount == 1:
